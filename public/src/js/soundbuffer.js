@@ -1,5 +1,8 @@
 ﻿class SoundBuffer{
-	constructor(){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(){
 		var AudioContext = window.AudioContext || window.webkitAudioContext
 		this.context = new AudioContext()
 		this.audioDecoder = this.context.decodeAudioData.bind(this.context)
@@ -70,7 +73,10 @@
 	}
 }
 class SoundGain{
-	constructor(soundBuffer, channel){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(soundBuffer, channel){
 		this.soundBuffer = soundBuffer
 		this.gainNode = soundBuffer.context.createGain()
 		if(channel){
@@ -118,7 +124,10 @@ class SoundGain{
 	}
 }
 class Sound{
-	constructor(gain, buffer){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(gain, buffer){
 		this.gain = gain
 		this.buffer = buffer
 		this.soundBuffer = gain.soundBuffer

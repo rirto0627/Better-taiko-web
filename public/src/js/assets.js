@@ -1,6 +1,7 @@
 var assets = {
 	"js": [
 		"lib/md5.min.js",
+		"lib/fuzzysort.js",
 		"loadsong.js",
 		"parseosu.js",
 		"titlescreen.js",
@@ -36,7 +37,8 @@ var assets = {
 		"lyrics.js",
 		"customsongs.js",
 		"abstractfile.js",
-		"idb.js"
+		"idb.js",
+		"plugins.js"
 	],
 	"css": [
 		"main.css",
@@ -45,7 +47,8 @@ var assets = {
 		"game.css",
 		"debug.css",
 		"songbg.css",
-		"view.css"
+		"view.css",
+		"search.css"
 	],
 	"assetsCss": [
 		"img/img.css"
@@ -101,12 +104,23 @@ var assets = {
 		"results_mikoshi.png",
 		"results_tetsuohana.png",
 		"results_tetsuohana2.png",
-		"settings_gamepad.png"
+		"settings_gamepad.png",
+		"crown.png",
+		"miss.png",
+		"bg_search.png",
+		"bg_genre_0.png",
+		"bg_genre_1.png",
+		"bg_genre_2.png",
+		"bg_genre_3.png",
+		"bg_genre_4.png",
+		"bg_genre_5.png",
+		"bg_genre_6.png",
+		"bg_genre_kids.png"
 	],
 	"audioSfx": [
 		"se_pause.ogg",
 		"se_calibration.ogg",
-		
+
 		"v_results.ogg",
 		"v_sanka.ogg",
 		"v_songsel.ogg",
@@ -178,7 +192,7 @@ var assets = {
 		"se_don.ogg",
 		"se_ka.ogg",
 		"se_jump.ogg",
-		
+
 		"se_balloon.ogg",
 		"se_hidden.ogg",
 		"se_gameclear.ogg",
@@ -187,7 +201,7 @@ var assets = {
 		"se_gamedonderfulcombo.ogg",
 		"se_results_countup.ogg",
 		"se_results_crown.ogg",
-		
+
 		"v_fullcombo.ogg",
 		"v_blank.ogg",
 		"v_renda.ogg",
@@ -219,9 +233,10 @@ var assets = {
 		"settings.html",
 		"account.html",
 		"login.html",
-		"customsongs.html"
+		"customsongs.html",
+		"search.html"
 	],
-	
+
 	"songs": [],
 	"sounds": {},
 	"image": {},

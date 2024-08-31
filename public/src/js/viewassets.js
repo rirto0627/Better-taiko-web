@@ -1,10 +1,13 @@
 class ViewAssets{
-	constructor(view){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(view){
 		this.view = view
 		this.controller = this.view.controller
 		this.allAssets = []
 		this.ctx = this.view.ctx
-		
+
 		// Background
 		this.don = this.createAsset("background", frame => {
 			var imgw = 360
@@ -59,7 +62,7 @@ class ViewAssets{
 		}
 		this.don.addFrames("clear", 30, "don_anim_clear", this.controller.don)
 		this.don.normalAnimation()
-		
+
 		// Bar
 		this.fire = this.createAsset("bar", frame => {
 			var imgw = 360
@@ -67,10 +70,10 @@ class ViewAssets{
 			var scale = 130
 			var ms = this.view.getMS()
 			var elapsed = ms - this.view.gogoTimeStarted
-			
+
 			var mul = this.view.slotPos.size / 106
 			var barH = 130 * mul
-			
+
 			if(this.view.gogoTime){
 				var grow = 3 - Math.min(200, elapsed) / 100
 				this.ctx.globalAlpha = Math.min(200, elapsed) / 200
@@ -93,7 +96,7 @@ class ViewAssets{
 		})
 		this.fire.addFrames("normal", 7, "fire_anim")
 		this.fire.setUpdateSpeed(1 / 8)
-		
+
 		// Notes
 		this.explosion = this.createAsset("notes", frame => {
 			var w = 222
@@ -127,7 +130,7 @@ class ViewAssets{
 		this.explosion.type = null
 		this.explosion.addFrames("normal", 14, "notes_explosion")
 		this.explosion.setUpdateSpeed(1, true)
-		
+
 		// Foreground
 		this.fireworks = []
 		for(let i = 0; i < 5 ; i++){
@@ -154,7 +157,7 @@ class ViewAssets{
 			fireworksAsset.setUpdateSpeed(1 / 16)
 			this.fireworks.push(fireworksAsset)
 		}
-		
+
 		this.changeBeatInterval(this.view.beatInterval, true)
 	}
 	createAsset(layer, position){

@@ -1,6 +1,6 @@
 bcrypt==3.2.0
 ffmpy==0.2.3
-Flask==1.1.2
+Flask==2.0.1
 Flask-Caching==1.9.0
 Flask-Session==0.3.2
 Flask-WTF==0.14.3
@@ -11,3 +11,8 @@ redis==3.5.3
 requests==2.25.1
 websockets==8.1
 itsdangerous==2.0.1
+
+Werkzeug==2.0.1
+Jinja2==3.0.1
+itsdangerous==2.0.1
+click==8.0.1

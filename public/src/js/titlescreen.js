@@ -1,11 +1,14 @@
 class Titlescreen{
-	constructor(songId){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(songId){
 		this.songId = songId
 		db.getItem("customFolder").then(folder => this.customFolder = folder)
-		
+
 		if(!songId){
 			loader.changePage("titlescreen", false)
-			
+
 			this.titleScreen = document.getElementById("title-screen")
 			this.proceed = document.getElementById("title-proceed")
 			this.disclaimerText = document.getElementById("title-disclaimer-text")
@@ -13,7 +16,7 @@ class Titlescreen{
 			this.logo = new Logo()
 		}
 		this.setLang(allStrings[settings.getItem("language")])
-		
+
 		if(songId){
 			if(localStorage.getItem("tutorial") === "true"){
 				new SongSelect(false, false, this.touched, this.songId)
@@ -30,7 +33,7 @@ class Titlescreen{
 				}
 				this.onPressed(true)
 			})
-			
+
 			assets.sounds["v_title"].play()
 			this.keyboard = new Keyboard({
 				confirm: ["enter", "space", "don_l", "don_r"]
@@ -48,7 +51,7 @@ class Titlescreen{
 			pageEvents.send("title-screen")
 		}
 	}
-	
+
 	onPressed(pressed, name){
 		if(pressed){
 			if(name === "gamepadConfirm" && (snd.buffer.context.state === "suspended" || this.customFolder)){
@@ -112,12 +115,12 @@ class Titlescreen{
 		}
 		this.proceed.innerText = strings.titleProceed
 		this.proceed.setAttribute("alt", strings.titleProceed)
-		
+
 		this.disclaimerText.innerText = strings.titleDisclaimer
 		this.disclaimerText.setAttribute("alt", strings.titleDisclaimer)
 		this.disclaimerCopyright.innerText = strings.titleCopyright
 		this.disclaimerCopyright.setAttribute("alt", strings.titleCopyright)
-		
+
 		this.logo.updateSubtitle()
 	}
 	clean(){

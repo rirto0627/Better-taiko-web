@@ -21,7 +21,13 @@ var translations = {
 		tw: "Microsoft YaHei, sans-serif",
 		ko: "Microsoft YaHei, sans-serif"
 	},
-	
+	intl: {
+		ja: "ja",
+		en: "en-GB",
+		cn: "zh-Hans",
+		tw: "zh-Hant",
+		ko: "ko"
+	},
 	taikoWeb: {
 		ja: "たいこウェブ",
 		en: "Taiko Web",
@@ -40,7 +46,7 @@ var translations = {
 		ja: "この非公式シミュレーターはバンダイナムコとは関係がありません。",
 		en: "This unofficial simulator is unaffiliated with BANDAI NAMCO.",
 		cn: "这款非官方模拟器与BANDAI NAMCO无关。",
-		tw: "這款非官方模擬器與BANDAI NAMCO無關。",
+		tw: "這款非官方模擬器與 BANDAI NAMCO 無關。",
 		ko: "이 비공식 시뮬레이터는 반다이 남코와 관련이 없습니다."
 	},
 	titleCopyright: {
@@ -101,6 +107,13 @@ var translations = {
 		cn: "游戏设定",
 		tw: "遊戲設定",
 		ko: "게임 설정"
+	},
+	songSuggest: {
+		ja: "曲の提案",
+		en: "Song Suggesting",
+		cn: "歌曲建议",
+		tw: "歌曲建議",
+		ko: "노래 제안"
 	},
 	soundOptions: {
 		ja: "音色",
@@ -305,20 +318,6 @@ var translations = {
 		tw: "無音",
 		ko: "無音"
 	},
-	s29: {
-		ja: "笨羊1",
-		en: "stupid sheep1",
-		cn: "笨羊1",
-		tw: "笨羊1",
-		ko: "笨羊1"
-	},
-	s30: {
-		ja: "笨羊2",
-		en: "stupid sheep2",
-		cn: "笨羊2",
-		tw: "笨羊2",
-		ko: "笨羊2"
-	},
 	songOptions: {
 		ja: "演奏オプション",
 		en: "Song Options",
@@ -407,7 +406,7 @@ var translations = {
 		ja: "オンラインセッションを開始する！",
 		en: "Begin an Online Session!",
 		cn: "开始在线会话！",
-		tw: "開始多人模式!",
+		tw: "開始多人模式！",
 		ko: "온라인 세션 시작!"
 	},
 	sessionEnd: {
@@ -418,13 +417,17 @@ var translations = {
 		ko: "온라인 세션 끝내기"
 	},
 	scoreSaveFailed: {
-		ja: null,
+		ja: "サーバーに接続できませんでした。スコアは保存されていません。\n\nログインするか、ページを更新して、再度スコアの保存をお試しください。",
 		en: "Could not connect to the server, your score has not been saved.\n\nPlease log in or refresh the page to try saving the score again.",
 		tw: "無法連接至伺服器，你的成績未能儲存。若要儲存成績，請登入或重新載入頁面。"
 	},
 	loadSongError: {
-		ja: null,
-		en: "Could not load song %s with id %s.\n\n%s"
+		ja: "曲「%s」を読み込むことができませんでした。（ID：%s）\n\n%s",
+		en: "Could not load song %s with ID %s.\n\n%s"
+	},
+	accessNotGrantedError: {
+		ja: "ファイルへのアクセス権が拒否されました",
+		en: "Permission to access the file was not granted"
 	},
 	loading: {
 		ja: "ロード中...",
@@ -655,7 +658,7 @@ var translations = {
 		tw: "連打數",
 		ko: "연타 횟수"
 	},
-	
+
 	errorOccured: {
 		ja: "エラーが発生しました。再読み込みしてください。",
 		en: "An error occurred, please refresh",
@@ -825,10 +828,10 @@ var translations = {
 			ko: "멀티플레이어 세션"
 		},
 		linkTutorial: {
-			ja: null,
+			ja: "このリンクをお友達とシェアして、一緒にプレイを始めて。相手が参加するまで、この画面を離れないでください。",
 			en: "Share this link with your friend to start playing together! Do not leave this screen while they join.",
 			cn: "复制下方地址，给你的朋友即可开始一起游戏！当他们与您联系之前，请不要离开此页面。",
-			tw: "複製下方地址，給你的朋友即可開始一起遊戲！當他們與您聯繫之前，請不要離開此頁面。",
+			tw: "分享下方網址給你的朋友即可開始一起遊戲！在他們加入時，請不要離開此頁面。",
 			ko: "링크를 공유하여 친구와 플레이하세요! 친구가 입장하기 전에 페이지를 나가지 말아주세요."
 		},
 		cancel: {
@@ -1088,7 +1091,7 @@ var translations = {
 				ja: null,
 				en: "Audio Latency Calibration",
 				tw: "聲音延遲校正"
-				
+
 			},
 			content: {
 				ja: null,
@@ -1580,8 +1583,85 @@ var translations = {
 			tw: "驗證錯誤：%s"
 		},
 		cookieError: {
+			ja: "この機能には、サードパーティのクッキーが必要です。",
 			en: "This function requires third party cookies.",
 			tw: "此功能需要第三方 cookies。"
+		}
+	},
+	plugins: {
+		title: {
+			ja: "プラグイン",
+			en: "Plugins"
+		},
+		unloadAll: {
+			ja: "すべて無効にする",
+			en: "Unload All"
+		},
+		warning: {
+			ja: "%sを読み込もうとしています。プラグインは信頼できる場合のみ読み込むようにしてください。続行しますか？",
+			en: "You are about to load %s. Plugins should only be loaded if you trust them. Continue?"
+		},
+		plugin: {
+			ja: {
+				one: "%sつのプラグイン",
+				other: "%sつのプラグイン"
+			},
+			en: {
+				one: "%s plugin",
+				other: "%s plugins"
+			}
+		},
+		author: {
+			ja: "作成者：%s",
+			en: "By %s"
+		},
+		version: {
+			ja: "Ver. %s",
+			en: "Version %s"
+		}
+	},
+	search: {
+		search: {
+			ja: "曲を検索",
+			en: "Search Songs"
+		},
+		searchInput: {
+			ja: "曲を検索...",
+			en: "Search for songs..."
+		},
+		noResults: {
+			ja: "結果は見つかりませんでした。",
+			en: "No results found."
+		},
+		tip: {
+			ja: "ヒント：",
+			en: "Tip:"
+		},
+		tips: {
+			ja: [
+				"CTRL+Fで検索窓を開く!",
+				"検索フィルタの組み合わせは自由自在です！",
+				"キーワードでジャンルを絞り込めます！(例: \"genre:variety\", \"genre:namco\")",
+				"「oni:10」などのフィルターを使用して、特定の難易度の曲を検索して！",
+				"Difficulty filters support ranges, too! Try \"ura:1-5\"!",
+				"Want to see your full combos? Try \"gold:any\", \"gold:oni\", etc.!",
+				"Only want to see creative songs? Use the \"creative:yes\" filter!",
+				"Find songs with lyrics enabled with the \"lyrics:yes\" filter!",
+				"Feel like trying something new? Use the \"played:no\" filter to only see songs you haven't played yet!",
+				"Looking for creative courses from a specific creator? Use the \"maker:<name>\" filter!",
+			],
+			en: [
+				"Open the search window by pressing CTRL+F!",
+				"Mix and match as many search filters as you want!",
+				"Filter by genre by using the \"genre:\" keyword! (e.g. \"genre:variety\", \"genre:namco\")",
+				"Use filters like \"oni:10\" to search for songs with a particular difficulty!",
+				"Difficulty filters support ranges, too! Try \"ura:1-5\"!",
+				"Want to see your full combos? Try \"gold:any\", \"gold:oni\", etc.!",
+				"Only want to see creative songs? Use the \"creative:yes\" filter!",
+				"Find songs with lyrics enabled with the \"lyrics:yes\" filter!",
+				"Feel like trying something new? Use the \"played:no\" filter to only see songs you haven't played yet!",
+				"Looking for creative courses from a specific creator? Use the \"maker:<name>\" filter!"
+			]
 		}
 	}
 }

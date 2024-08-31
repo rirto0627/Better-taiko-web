@@ -1,16 +1,19 @@
 class Account{
-	constructor(touchEnabled){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(touchEnabled){
 		this.touchEnabled = touchEnabled
 		cancelTouch = false
 		this.locked = false
-		
+
 		if(account.loggedIn){
 			this.accountForm()
 		}else{
 			this.loginForm()
 		}
 		this.selected = this.items.length - 1
-		
+
 		this.keyboard = new Keyboard({
 			confirm: ["enter", "space", "don_l", "don_r"],
 			previous: ["left", "up", "ka_l"],
@@ -23,26 +26,28 @@ class Account{
 			"next": ["d", "r", "rb", "rt", "lsd", "lsr"],
 			"back": ["start", "a"]
 		}, this.keyPressed.bind(this))
-		
+
 		pageEvents.send("account", account.loggedIn)
 	}
 	accountForm(){
 		loader.changePage("account", true)
 		this.mode = "account"
-		
+
 		this.setAltText(this.getElement("view-title"), account.username)
 		this.items = []
 		this.inputForms = []
 		this.shownDiv = ""
-		
+
 		this.errorDiv = this.getElement("error-div")
 		this.getElement("displayname-hint").innerText = strings.account.displayName
 		this.displayname = this.getElement("displayname")
 		this.displayname.placeholder = strings.account.displayName
 		this.displayname.value = account.displayName
 		this.inputForms.push(this.displayname)
-		
+
 		this.redrawRunning = true
+		this.redrawPaused = matchMedia("(prefers-reduced-motion: reduce)").matches
+		this.redrawForce = true
 		this.customdonRedrawBind = this.customdonRedraw.bind(this)
 		this.start = new Date().getTime()
 		this.frames = [
@@ -54,6 +59,7 @@ class Account{
 		this.customdonCache = new CanvasCache()
 		this.customdonCache.resize(723 * 2, 1858, 1)
 		this.customdonCanvas = this.getElement("customdon-canvas")
+		pageEvents.add(this.customdonCanvas, "click", this.customdonPause.bind(this))
 		this.customdonCtx = this.customdonCanvas.getContext("2d")
 		this.customdonBodyFill = this.getElement("customdon-bodyfill")
 		this.customdonBodyFill.value = account.don.body_fill
@@ -70,7 +76,7 @@ class Account{
 		pageEvents.add(this.customdonResetBtn, ["click", "touchstart"], this.customdonReset.bind(this))
 		this.customdonChange()
 		this.customdonRedraw()
-		
+
 		this.accountPassButton = this.getElement("accountpass-btn")
 		this.setAltText(this.accountPassButton, strings.account.changePassword)
 		pageEvents.add(this.accountPassButton, ["click", "touchstart"], event => {
@@ -82,7 +88,7 @@ class Account{
 			this.inputForms.push(this.accountPass[i])
 		}
 		this.accountPassDiv = this.getElement("accountpass-div")
-		
+
 		this.accountDelButton = this.getElement("accountdel-btn")
 		this.setAltText(this.accountDelButton, strings.account.deleteAccount)
 		pageEvents.add(this.accountDelButton, ["click", "touchstart"], event => {
@@ -92,30 +98,35 @@ class Account{
 		this.accountDel.password.placeholder = strings.account.verifyPassword
 		this.inputForms.push(this.accountDel.password)
 		this.accountDelDiv = this.getElement("accountdel-div")
-		
+
 		this.linkPrivacy = this.getElement("privacy-btn")
 		this.setAltText(this.linkPrivacy, strings.account.privacy)
 		pageEvents.add(this.linkPrivacy, ["mousedown", "touchstart"], this.openPrivacy.bind(this))
 		this.items.push(this.linkPrivacy)
-		
+
 		this.logoutButton = this.getElement("logout-btn")
 		this.setAltText(this.logoutButton, strings.account.logout)
 		pageEvents.add(this.logoutButton, ["mousedown", "touchstart"], this.onLogout.bind(this))
 		this.items.push(this.logoutButton)
-		
+
 		this.endButton = this.getElement("view-end-button")
 		this.setAltText(this.endButton, strings.account.cancel)
 		pageEvents.add(this.endButton, ["mousedown", "touchstart"], this.onEnd.bind(this))
 		this.items.push(this.endButton)
-		
+
 		this.saveButton = this.getElement("save-btn")
 		this.setAltText(this.saveButton, strings.account.save)
 		pageEvents.add(this.saveButton, ["mousedown", "touchstart"], this.onSave.bind(this))
 		this.items.push(this.saveButton)
-		
+
 		for(var i = 0; i < this.inputForms.length; i++){
 			pageEvents.add(this.inputForms[i], ["keydown", "keyup", "keypress"], this.onFormPress.bind(this))
 		}
+	}
+	customdonPause(){
+		this.redrawPaused = !this.redrawPaused
+		this.redrawForce = true
+		this.start = new Date().getTime()
 	}
 	customdonChange(){
 		var ctx = this.customdonCtx
@@ -137,7 +148,7 @@ class Account{
 			ctx.globalCompositeOperation = "source-atop"
 			ctx.fillStyle = this.customdonFaceFill.value
 			ctx.fillRect(0, 0, w, h)
-			
+
 			ctx.globalCompositeOperation = "source-over"
 			this.customdonCache.get({
 				ctx: ctx,
@@ -145,6 +156,7 @@ class Account{
 				id: "bodyFill"
 			})
 		})
+		this.redrawForce = true
 	}
 	customdonReset(event){
 		if(event.type === "touchstart"){
@@ -159,12 +171,16 @@ class Account{
 			return
 		}
 		requestAnimationFrame(this.customdonRedrawBind)
-		if(!document.hasFocus()){
+		if(!document.hasFocus() || this.redrawPaused && !this.redrawForce){
 			return
 		}
 		var ms = new Date().getTime()
 		var ctx = this.customdonCtx
-		var frame = this.frames[Math.floor((ms - this.start) / 30) % this.frames.length]
+		if(this.redrawPaused){
+			var frame = 0
+		}else{
+			var frame = this.frames[Math.floor((ms - this.start) / 30) % this.frames.length]
+		}
 		var w = 360
 		var h = 184
 		var sx = Math.floor(frame / 10) * (w + 2)
@@ -180,6 +196,7 @@ class Account{
 			sx, sy, w, h,
 			-26, 0, w, h
 		)
+		this.redrawForce = false
 	}
 	showDiv(event, div){
 		if(event){
@@ -213,9 +230,9 @@ class Account{
 	loginForm(register, fromSwitch){
 		loader.changePage("login", true)
 		this.mode = register ? "register" : "login"
-		
+
 		this.setAltText(this.getElement("view-title"), strings.account[this.mode])
-		
+
 		this.errorDiv = this.getElement("error-div")
 		this.items = []
 		this.form = this.getElement("login-form")
@@ -228,7 +245,7 @@ class Account{
 		this.getElement("remember-label").appendChild(document.createTextNode(strings.account.remember))
 		this.loginButton = this.getElement("login-btn")
 		this.registerButton = this.getElement("register-btn")
-		
+
 		if(register){
 			var pass2 = document.createElement("input")
 			pass2.type = "password"
@@ -244,26 +261,26 @@ class Account{
 			this.setAltText(this.loginButton, strings.account.login)
 			this.setAltText(this.registerButton, strings.account.register)
 		}
-		
+
 		pageEvents.add(this.form, "submit", this.onLogin.bind(this))
 		pageEvents.add(this.loginButton, ["mousedown", "touchstart"], this.onLogin.bind(this))
-		
+
 		pageEvents.add(this.registerButton, ["mousedown", "touchstart"], this.onSwitchMode.bind(this))
 		this.items.push(this.registerButton)
-		
+
 		this.linkPrivacy = this.getElement("privacy-btn")
 		this.setAltText(this.linkPrivacy, strings.account.privacy)
 		pageEvents.add(this.linkPrivacy, ["mousedown", "touchstart"], this.openPrivacy.bind(this))
 		this.items.push(this.linkPrivacy)
-		
+
 		if(!register){
 			this.items.push(this.loginButton)
 		}
-		
+
 		for(var i = 0; i < this.form.length; i++){
 			pageEvents.add(this.form[i], ["keydown", "keyup", "keypress"], this.onFormPress.bind(this))
 		}
-		
+
 		this.endButton = this.getElement("view-end-button")
 		this.setAltText(this.endButton, strings.account.back)
 		pageEvents.add(this.endButton, ["mousedown", "touchstart"], this.onEnd.bind(this))
@@ -315,6 +332,7 @@ class Account{
 	onFormPress(event){
 		event.stopPropagation()
 		if(event.type === "keypress" && event.keyCode === 13){
+			event.preventDefault()
 			if(this.mode === "account"){
 				this.onSave()
 			}else{
@@ -608,6 +626,7 @@ class Account{
 			}
 			this.redrawRunning = false
 			this.customdonCache.clean()
+			pageEvents.remove(this.customdonCanvas, "click")
 			pageEvents.remove(this.customdonBodyFill, ["change", "input"])
 			pageEvents.remove(this.customdonFaceFill, ["change", "input"])
 			pageEvents.remove(this.customdonResetBtn, ["click", "touchstart"])

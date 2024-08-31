@@ -56,6 +56,10 @@ function browserSupport(){
 		},
 		"KeyboardEvent.key": function(){
 			return "key" in KeyboardEvent.prototype
+		},
+		"Module import": function(){
+			eval("import('data:text/javascript,')")
+			return true
 		}
 	}
 	failedTests = []
@@ -96,60 +100,65 @@ function showUnsupported(strings){
 		}
 		strings = allStrings[lang]
 	}
-	
+
 	var div = document.getElementById("unsupportedBrowser")
 	if(div){
 		div.parentNode.removeChild(div)
 	}
 	div = document.createElement("div")
 	div.id = "unsupportedBrowser"
-	
+
 	var warn = document.createElement("div")
 	warn.id = "unsupportedWarn"
 	warn.innerText = "!"
+	warn.textContent = "!"
 	div.appendChild(warn)
 	var hide = document.createElement("div")
 	hide.id = "unsupportedHide"
 	hide.innerText = "x"
+	hide.textContent = "x"
 	div.appendChild(hide)
-	
+
 	var span = document.createElement("span")
 	var browserWarning = strings.browserSupport.browserWarning.split("%s")
 	for(var i = 0; i < browserWarning.length; i++){
 		if(i !== 0){
 			var link = document.createElement("a")
 			link.innerText = strings.browserSupport.details
+			link.textContent = strings.browserSupport.details
 			span.appendChild(link)
 		}
 		span.appendChild(document.createTextNode(browserWarning[i]))
 	}
 	div.appendChild(span)
-	
+
 	var details = document.createElement("div")
 	details.id = "unsupportedDetails"
 	details.appendChild(document.createTextNode(strings.browserSupport.failedTests))
-	
+
 	var ul = document.createElement("ul")
 	for(var i = 0; i < failedTests.length; i++){
 		var li = document.createElement("li")
 		li.innerText = failedTests[i]
+		li.textContent = failedTests[i]
 		ul.appendChild(li)
 	}
 	details.appendChild(ul)
-	
+
 	var supportedBrowser = strings.browserSupport.supportedBrowser.split("%s")
 	for(var i = 0; i < supportedBrowser.length; i++){
 		if(i !== 0){
 			var chrome = document.createElement("a")
 			chrome.href = "https://www.google.com/chrome/"
 			chrome.innerText = "Google Chrome"
+			chrome.textContent = "Google Chrome"
 			details.appendChild(chrome)
 		}
 		details.appendChild(document.createTextNode(supportedBrowser[i]))
 	}
-	
+
 	div.appendChild(details)
-	
+
 	document.body.appendChild(div)
 	var divClick = function(event){
 		if(event.type === "touchstart"){

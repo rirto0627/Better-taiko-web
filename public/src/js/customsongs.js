@@ -1,38 +1,41 @@
 class CustomSongs{
-	constructor(touchEnabled, noPage){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(touchEnabled, noPage){
 		this.loaderDiv = document.createElement("div")
 		this.loaderDiv.innerHTML = assets.pages["loadsong"]
 		var loadingText = this.loaderDiv.querySelector("#loading-text")
 		this.setAltText(loadingText, strings.loading)
-		
+
 		this.locked = false
 		this.mode = "main"
-		
+
 		if(noPage){
 			this.noPage = true
 			return
 		}
-		
+
 		this.touchEnabled = touchEnabled
 		loader.changePage("customsongs", true)
 		if(touchEnabled){
 			this.getElement("view-outer").classList.add("touch-enabled")
 		}
-		
+
 		var tutorialTitle = this.getElement("view-title")
 		this.setAltText(tutorialTitle, strings.customSongs.title)
-		
+
 		var tutorialContent = this.getElement("view-content")
 		strings.customSongs.description.forEach(string => {
 			tutorialContent.appendChild(document.createTextNode(string))
 			tutorialContent.appendChild(document.createElement("br"))
 		})
-		
+
 		this.items = []
 		this.linkLocalFolder = document.getElementById("link-localfolder")
 		this.hasLocal = (typeof showDirectoryPicker === "function" || "webkitdirectory" in HTMLInputElement.prototype) && !(/Android|iPhone|iPad/.test(navigator.userAgent))
 		this.selected = -1
-		
+
 		if(this.hasLocal){
 			this.browse = document.getElementById("browse")
 			pageEvents.add(this.browse, "change", this.browseChange.bind(this))
@@ -46,7 +49,7 @@ class CustomSongs{
 		}else{
 			this.linkLocalFolder.parentNode.removeChild(this.linkLocalFolder)
 		}
-		
+
 		var groupGdrive = document.getElementById("group-gdrive")
 		this.linkGdriveFolder = document.getElementById("link-gdrivefolder")
 		this.linkGdriveAccount = document.getElementById("link-gdriveaccount")
@@ -69,7 +72,7 @@ class CustomSongs{
 			groupGdrive.style.display = "none"
 			this.linkPrivacy.parentNode.removeChild(this.linkPrivacy)
 		}
-		
+
 		this.endButton = this.getElement("view-end-button")
 		this.setAltText(this.endButton, strings.session.cancel)
 		pageEvents.add(this.endButton, ["mousedown", "touchstart"], event => this.onEnd(event, true))
@@ -78,7 +81,7 @@ class CustomSongs{
 			this.endButton.classList.add("selected")
 			this.selected = this.items.length - 1
 		}
-		
+
 		this.fileSystem = location.protocol === "https:" && DataTransferItem.prototype.getAsFileSystemHandle
 		if(this.fileSystem || DataTransferItem.prototype.webkitGetAsEntry){
 			this.dropzone = document.getElementById("dropzone")
@@ -101,7 +104,7 @@ class CustomSongs{
 			})
 			pageEvents.add(document, "drop", this.filesDropped.bind(this))
 		}
-		
+
 		this.errorDiv = document.getElementById("customsongs-error")
 		pageEvents.add(this.errorDiv, ["mousedown", "touchstart"], event => {
 			if(event.target === event.currentTarget){
@@ -114,7 +117,7 @@ class CustomSongs{
 		this.errorEnd = this.errorDiv.getElementsByClassName("view-end-button")[0]
 		this.setAltText(this.errorEnd, strings.tutorial.ok)
 		pageEvents.add(this.errorEnd, ["mousedown", "touchstart"], () => this.hideError(true))
-		
+
 		this.keyboard = new Keyboard({
 			confirm: ["enter", "space", "don_l", "don_r"],
 			previous: ["left", "up", "ka_l"],
@@ -127,7 +130,7 @@ class CustomSongs{
 			next: ["d", "r", "rb", "rt", "lsd", "lsr"],
 			back: ["start", "a"]
 		}, this.keyPressed.bind(this))
-		
+
 		pageEvents.send("custom-songs")
 	}
 	getElement(name){
@@ -149,10 +152,12 @@ class CustomSongs{
 			return
 		}
 		this.changeSelected(this.linkLocalFolder)
-		if(typeof showDirectoryPicker === "function"){
+		if(typeof showDirectoryPicker === "function" && !(/\bOPR\/|\bOPRGX\//.test(navigator.userAgent))){
 			return showDirectoryPicker().then(file => {
-				this.walkFilesystem(file).then(files => this.importLocal(files)).then(e => {
-					db.setItem("customFolder", [file])
+				this.walkFilesystem(file).then(files => this.importLocal(files)).then(input => {
+					if(input){
+						db.setItem("customFolder", [file])
+					}
 				}).catch(e => {
 					if(e !== "cancel"){
 						return Promise.reject(e)
@@ -217,8 +222,8 @@ class CustomSongs{
 				}))
 			}
 		}
-		Promise.all(dropPromises).then(() => this.importLocal(allFiles)).then(() => {
-			if(dbItems.length){
+		Promise.all(dropPromises).then(() => this.importLocal(allFiles)).then(input => {
+			if(input && dbItems.length){
 				db.setItem("customFolder", dbItems)
 			}
 		})
@@ -254,7 +259,7 @@ class CustomSongs{
 		}
 		this.locked = true
 		this.loading(true)
-		
+
 		var importSongs = new ImportSongs()
 		return importSongs.load(files).then(this.songsLoaded.bind(this), e => {
 			this.browse.parentNode.reset()
@@ -265,6 +270,7 @@ class CustomSongs{
 			}else if(e !== "cancel"){
 				return Promise.reject(e)
 			}
+			return false
 		})
 	}
 	gdriveFolder(event){
@@ -297,16 +303,16 @@ class CustomSongs{
 				this.showError(error)
 			})
 		}).then(files => importSongs.load(files))
-		.then(this.songsLoaded.bind(this))
-		.catch(e => {
-			this.locked = false
-			this.loading(false)
-			if(e === "nosongs"){
-				this.showError(strings.customSongs.noSongs)
-			}else if(e !== "cancel"){
-				return Promise.reject(e)
-			}
-		}).finally(() => {
+			.then(this.songsLoaded.bind(this))
+			.catch(e => {
+				this.locked = false
+				this.loading(false)
+				if(e === "nosongs"){
+					this.showError(strings.customSongs.noSongs)
+				}else if(e !== "cancel"){
+					return Promise.reject(e)
+				}
+			}).finally(() => {
 			var addRemove = !gpicker || !gpicker.oauthToken ? "add" : "remove"
 			this.linkGdriveAccount.classList[addRemove]("hiddenbtn")
 		})
@@ -387,6 +393,7 @@ class CustomSongs{
 			new SongSelect("customSongs", false, this.touchEnabled)
 			pageEvents.send("import-songs", length)
 		}, 500)
+		return songs && songs.length
 	}
 	keyPressed(pressed, name){
 		if(!pressed || this.locked){

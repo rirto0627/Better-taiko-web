@@ -1,5 +1,8 @@
 class P2Connection{
-	constructor(){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(){
 		this.closed = true
 		this.lastMessages = {}
 		this.otherConnected = false
@@ -8,6 +11,7 @@ class P2Connection{
 		this.allEvents = new Map()
 		this.addEventListener("message", this.message.bind(this))
 		this.currentHash = ""
+		this.disabled = 0
 		pageEvents.add(window, "hashchange", this.onhashchange.bind(this))
 	}
 	addEventListener(type, callback){
@@ -25,16 +29,18 @@ class P2Connection{
 		}
 	}
 	open(){
-		this.closed = false
-		var wsProtocol = location.protocol == "https:" ? "wss:" : "ws:"
-		this.socket = new WebSocket(wsProtocol + "//" + location.host + "/p2")
-		pageEvents.race(this.socket, "open", "close").then(response => {
-			if(response.type === "open"){
-				return this.openEvent()
-			}
-			return this.closeEvent()
-		})
-		pageEvents.add(this.socket, "message", this.messageEvent.bind(this))
+		if(this.closed && !this.disabled){
+			this.closed = false
+			var wsProtocol = location.protocol == "https:" ? "wss:" : "ws:"
+			this.socket = new WebSocket(wsProtocol + "//" + location.host + "/p2")
+			pageEvents.race(this.socket, "open", "close").then(response => {
+				if(response.type === "open"){
+					return this.openEvent()
+				}
+				return this.closeEvent()
+			})
+			pageEvents.add(this.socket, "message", this.messageEvent.bind(this))
+		}
 	}
 	openEvent(){
 		var addedType = this.allEvents.get("open")
@@ -43,8 +49,12 @@ class P2Connection{
 		}
 	}
 	close(){
-		this.closed = true
-		this.socket.close()
+		if(!this.closed){
+			this.closed = true
+			if(this.socket){
+				this.socket.close()
+			}
+		}
 	}
 	closeEvent(){
 		this.removeEventListener(onmessage)
@@ -217,12 +227,12 @@ class P2Connection{
 		if(this.otherConnected || this.notes.length > 0){
 			var type = circle.type
 			var drumrollNotes = type === "balloon" || type === "drumroll" || type === "daiDrumroll"
-			
+
 			if(drumrollNotes && mekadon.getMS() > circle.endTime + mekadon.delay){
 				circle.played(-1, false)
 				mekadon.game.updateCurrentCircle()
 			}
-			
+
 			if(drumrollNotes){
 				mekadon.playDrumrollAt(circle, 0, this.drumrollPace, type === "drumroll" || type === "daiDrumroll" ? this.kaAmount : 0)
 			}else if(this.notes.length === 0){
@@ -246,5 +256,13 @@ class P2Connection{
 		}else if(mekadon.miss(circle)){
 			this.notes.shift()
 		}
+	}
+	enable(){
+		this.disabled = Math.max(0, this.disabled - 1)
+		setTimeout(this.open.bind(this), 100)
+	}
+	disable(){
+		this.disabled++
+		this.close()
 	}
 }

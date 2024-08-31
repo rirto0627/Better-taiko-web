@@ -13,14 +13,17 @@ function filePermission(file){
 				if(response === "granted"){
 					return file
 				}else{
-					return Promise.reject(file)
+					return Promise.reject(strings.accessNotGrantedError)
 				}
 			})
 		}
 	})
 }
 class RemoteFile{
-	constructor(url){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(url){
 		this.url = url
 		try{
 			this.path = new URL(url).pathname
@@ -30,10 +33,17 @@ class RemoteFile{
 		if(this.path.startsWith("/")){
 			this.path = this.path.slice(1)
 		}
-		this.name = this.path
-		var index = this.name.lastIndexOf("/")
-		if(index !== -1){
-			this.name = this.name.slice(index + 1)
+		if(this.url.startsWith("data:")){
+			this.name = "datauri"
+			if(this.url.startsWith("data:audio/ogg")){
+				this.name += ".ogg"
+			}
+		}else{
+			this.name = this.path
+			var index = this.name.lastIndexOf("/")
+			if(index !== -1){
+				this.name = this.name.slice(index + 1)
+			}
 		}
 	}
 	arrayBuffer(){
@@ -49,11 +59,16 @@ class RemoteFile{
 		}
 	}
 	blob(){
-		return this.arrayBuffer().then(response => new Blob([response]))
+		return loader.ajax(this.url, request => {
+			request.responseType = "blob"
+		})
 	}
 }
 class LocalFile{
-	constructor(file, path){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(file, path){
 		this.file = file
 		this.path = path || file.webkitRelativePath
 		this.url = this.path
@@ -70,7 +85,10 @@ class LocalFile{
 	}
 }
 class FilesystemFile{
-	constructor(file, path){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(file, path){
 		this.file = file
 		this.path = path
 		this.url = this.path
@@ -87,14 +105,17 @@ class FilesystemFile{
 	}
 }
 class GdriveFile{
-	constructor(fileObj){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(fileObj){
 		this.path = fileObj.path
 		this.name = fileObj.name
 		this.id = fileObj.id
 		this.url = gpicker.filesUrl + this.id + "?alt=media"
 	}
 	arrayBuffer(){
-		return gpicker.downloadFile(this.id, true)
+		return gpicker.downloadFile(this.id, "arraybuffer")
 	}
 	read(encoding){
 		if(encoding){
@@ -104,11 +125,14 @@ class GdriveFile{
 		}
 	}
 	blob(){
-		return this.arrayBuffer().then(response => new Blob([response]))
+		return gpicker.downloadFile(this.id, "blob")
 	}
 }
 class CachedFile{
-	constructor(contents, oldFile){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(contents, oldFile){
 		this.contents = contents
 		this.oldFile = oldFile
 		this.path = oldFile.path
@@ -122,6 +146,6 @@ class CachedFile{
 		return this.arrayBuffer()
 	}
 	blob(){
-		return this.arrayBuffer().then(response => new Blob([response]))
+		return this.arrayBuffer()
 	}
 }

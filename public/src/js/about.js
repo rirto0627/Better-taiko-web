@@ -1,9 +1,12 @@
 ﻿class About{
-	constructor(touchEnabled){
+	constructor(...args){
+		this.init(...args)
+	}
+	init(touchEnabled){
 		this.touchEnabled = touchEnabled
 		loader.changePage("about", true)
 		cancelTouch = false
-		
+
 		this.endButton = this.getElement("view-end-button")
 		this.diagTxt = this.getElement("diag-txt")
 		this.version = document.getElementById("version-link").href
@@ -13,7 +16,7 @@
 		}
 		this.linkIssues = document.getElementById("link-issues")
 		this.linkEmail = document.getElementById("link-email")
-		
+
 		var tutorialTitle = this.getElement("view-title")
 		tutorialTitle.innerText = strings.aboutSimulator
 		tutorialTitle.setAttribute("alt", strings.aboutSimulator)
@@ -28,15 +31,15 @@
 		tutorialContent.appendChild(span)
 		this.endButton.innerText = strings.tutorial.ok
 		this.endButton.setAttribute("alt", strings.tutorial.ok)
-		
+
 		this.items = []
-		
+
 		this.getLink(this.linkIssues).innerText = strings.about.issues
 		this.linkIssues.setAttribute("alt", strings.about.issues)
 		var versionUrl = gameConfig._version.url
 		this.getLink(this.linkIssues).href = versionUrl + "issues"
 		this.items.push(this.linkIssues)
-		
+
 		var contactEmail = gameConfig.email
 		this.hasEmail = typeof contactEmail === "string"
 		if(this.hasEmail){
@@ -47,7 +50,7 @@
 		}else{
 			this.linkEmail.parentNode.removeChild(this.linkEmail)
 		}
-		
+
 		pageEvents.add(this.linkIssues, ["click", "touchend"], this.linkButton.bind(this))
 		if(this.hasEmail){
 			pageEvents.add(this.linkEmail, ["click", "touchend"], this.linkButton.bind(this))
@@ -55,7 +58,7 @@
 		pageEvents.add(this.endButton, ["mousedown", "touchstart"], this.onEnd.bind(this))
 		this.items.push(this.endButton)
 		this.selected = this.items.length - 1
-		
+
 		this.keyboard = new Keyboard({
 			confirm: ["enter", "space", "don_l", "don_r"],
 			previous: ["left", "up", "ka_l"],
@@ -68,7 +71,7 @@
 			"next": ["d", "r", "rb", "rt", "lsd", "lsr"],
 			"back": ["start", "a"]
 		}, this.keyPressed.bind(this))
-		
+
 		pageEvents.send("about", this.addDiag())
 	}
 	getElement(name){
@@ -118,9 +121,9 @@
 	}
 	addDiag(){
 		var diag = []
-		
+
 		diag.push("```")
-		diag.push("Taiko-Web version: " + this.version)
+		diag.push(gameConfig.game_name + " version: " + this.version)
 		diag.push("URL: " + location.href)
 		diag.push("User agent: " + navigator.userAgent)
 		diag.push("Screen size: " + innerWidth + "x" + innerHeight + ", outer: " + outerWidth + "x" + outerHeight + ", ratio: " + (window.devicePixelRatio || 1).toFixed(2))
@@ -157,6 +160,10 @@
 		diag.push("Language: " + strings.id + userLangStr)
 		var latency = settings.getItem("latency")
 		diag.push("Audio Latency: " + (latency.audio > 0 ? "+" : "") + latency.audio.toString() + "ms, Video Latency: " + (latency.video > 0 ? "+" : "") + latency.video.toString() + "ms")
+		var pluginList = plugins.allPlugins.map(pluginLoader => {
+			return (pluginLoader.plugin.module && pluginLoader.plugin.module.name || pluginLoader.name) + (pluginLoader.plugin.started ? " (started)" : "")
+		})
+		diag.push("Plugins: " + pluginList.join(", "))
 		var errorObj = {}
 		if(localStorage["lastError"]){
 			try{
@@ -173,13 +180,13 @@
 		}
 		diag.push("```")
 		var diag = diag.join("\n")
-		
+
 		if(navigator.userAgent.indexOf("Android") >= 0){
 			var iframe = document.createElement("iframe")
 			this.diagTxt.appendChild(iframe)
 			var body = iframe.contentWindow.document.body
 			body.innerText = diag
-			
+
 			body.setAttribute("style", `
 				font-family: monospace;
 				margin: 2px 0 0 2px;
@@ -204,12 +211,12 @@
 				})
 			}
 		}
-		
+
 		var issueBody = strings.about.issueTemplate + "\n\n\n\n" + diag
 		if(this.hasEmail){
 			this.getLink(this.linkEmail).href += "?body=" + encodeURIComponent(issueBody.replace(/\n/g, "<br>\r\n"))
 		}
-		
+
 		return diag
 	}
 	getLink(target){

@@ -4,7 +4,7 @@ class SongSelect{
 	}
 	init(fromTutorial, fadeIn, touchEnabled, songId, showWarning){
 		this.touchEnabled = touchEnabled
-		
+
 		loader.changePage("songselect", false)
 		this.canvas = document.getElementById("song-sel-canvas")
 		this.ctx = this.canvas.getContext("2d")
@@ -84,7 +84,7 @@ class SongSelect{
 				infoFill: "#656565"
 			}
 		}
-		
+
 		var songSkinLength = Object.keys(this.songSkin).length
 		for(var i in assets.categories){
 			var category = assets.categories[i]
@@ -96,7 +96,7 @@ class SongSelect{
 			}
 		}
 		this.songSkin["default"].sort = songSkinLength + 1
-		
+
 		this.searchStyle = document.createElement("style")
 		var searchCss = []
 		Object.keys(this.songSkin).forEach(key => {
@@ -114,7 +114,7 @@ class SongSelect{
 		loader.screen.appendChild(this.searchStyle)
 
 		this.font = strings.font
-		
+
 		this.songs = []
 		for(let song of assets.songs){
 			var title = this.getLocalTitle(song.title, song.title_lang)
@@ -190,7 +190,7 @@ class SongSelect{
 			action: "settings",
 			category: strings.gameSettings
 		})
-		
+
 		var showCustom = false
 		if(gameConfig.google_credentials.gdrive_enabled){
 			showCustom = true
@@ -218,7 +218,7 @@ class SongSelect{
 		// 	skin: this.songSkin.back,
 		// 	action: "back"
 		// })
-		
+
 		this.songAsset = {
 			marginTop: 104,
 			marginLeft: 18,
@@ -231,7 +231,7 @@ class SongSelect{
 			innerBorder: 8,
 			letterBorder: 12
 		}
-		
+
 		this.diffOptions = [{
 			text: strings.back,
 			fill: "#efb058",
@@ -245,15 +245,15 @@ class SongSelect{
 			iconFill: "#d9f19f",
 			letterSpacing: 0
 		},
-		{
-			text: strings.soundOptions,
-			fill: "#ff99b2",
-			iconName: "sounds",
-			iconFill: "#ffccd8",
-			letterSpacing: -4
-		}]
+			{
+				text: strings.soundOptions,
+				fill: "#ff99b2",
+				iconName: "sounds",
+				iconFill: "#ffccd8",
+				letterSpacing: -4
+			}]
 		this.optionsList = [strings.none, strings.auto, strings.netplay, strings.songMods.x2, strings.songMods.x3, strings.songMods.x4,strings.songMods.doron, strings.songMods.reverse, strings.songMods.half_shuffle, strings.songMods.shuffle, strings.songMods.hardcore, strings.songMods.allDon, strings.songMods.allKat]
-		this.soundList = [strings.taikoS, strings.testS, strings.s3, strings.s4, strings.s5, strings.s6, strings.s7, strings.s8, strings.s9, strings.s10, strings.s11, strings.s12, strings.s13, strings.s14, strings.s15, strings.s16, strings.s17, strings.s18, strings.s19, strings.s20, strings.s21, strings.s22, strings.s23, strings.s24, strings.s25, strings.s26, strings.s27, strings.s28, strings.s29, strings.s30]
+		this.soundList = [strings.taikoS, strings.testS, strings.s3, strings.s4, strings.s5, strings.s6, strings.s7, strings.s8, strings.s9, strings.s10, strings.s11, strings.s12, strings.s13, strings.s14, strings.s15, strings.s16, strings.s17, strings.s18, strings.s19, strings.s20, strings.s21, strings.s22, strings.s23, strings.s24, strings.s25, strings.s26, strings.s27, strings.s28]
 		this.draw = new CanvasDraw(noSmoothing)
 		this.songTitleCache = new CanvasCache(noSmoothing)
 		this.selectTextCache = new CanvasCache(noSmoothing)
@@ -262,31 +262,31 @@ class SongSelect{
 		this.sessionCache = new CanvasCache(noSmoothing)
 		this.currentSongCache = new CanvasCache(noSmoothing)
 		this.nameplateCache = new CanvasCache(noSmoothing)
-		
+
 		this.difficulty = [strings.easy, strings.normal, strings.hard, strings.oni]
 		this.difficultyId = ["easy", "normal", "hard", "oni", "ura"]
-		
+
 		this.sessionText = {
 			"sessionstart": strings.sessionStart,
 			"sessionend": strings.sessionEnd
 		}
-		
+
 		this.selectedSong = 0
 		this.selectedDiff = 0
 		this.selectedSound = 0
 		this.lastCurrentSong = {}
 		assets.sounds["bgm_songsel"].playLoop(0.1, false, 0, 1.442, 3.506)
-		
+
 		if(!assets.customSongs && !fromTutorial && !("selectedSong" in localStorage) && !songId){
 			fromTutorial = touchEnabled ? "about" : "tutorial"
 		}
 		if(p2.session || assets.customSongs && "customSelected" in localStorage){
 			fromTutorial = false
 		}
-		
+
 		this.drumSounds = settings.getItem("latency").drumSounds
 		this.playedSounds = {}
-		
+
 		var songIdIndex = -1
 		var newSelected = -1
 		if(fromTutorial){
@@ -318,14 +318,14 @@ class SongSelect{
 		if("selectedDiff" in localStorage){
 			this.selectedDiff = Math.min(Math.max(0, localStorage["selectedDiff"] |0), this.diffOptions.length + 3)
 		}
-		
+
 		this.songSelect = document.getElementById("song-select")
 		var cat = this.songs[this.selectedSong].originalCategory
 		this.drawBackground(cat)
-		
+
 		this.previewId = 0
 		this.previewList = Array(5)
-		
+
 		var skipStart = fromTutorial || p2.session
 		this.state = {
 			screen: songIdIndex !== -1 ? "difficulty" : (fadeIn ? "titleFadeIn" : (skipStart ? "song" : "title")),
@@ -350,9 +350,9 @@ class SongSelect{
 			resize: 0.3,
 			scrollDelay: 0.1
 		}
-		
+
 		this.startPreview(true)
-		
+
 		this.pressedKeys = {}
 		this.keyboard = new Keyboard({
 			confirm: ["enter", "space", "don_l", "don_r"],
@@ -380,11 +380,11 @@ class SongSelect{
 			jump_left: ["lb"],
 			jump_right: ["rb"]
 		}, this.keyPress.bind(this))
-		
+
 		if(!assets.customSongs){
 			this.startP2()
 		}
-		
+
 		pageEvents.add(loader.screen, "mousemove", this.mouseMove.bind(this))
 		pageEvents.add(loader.screen, "mouseleave", () => {
 			this.state.moveHover = null
@@ -396,12 +396,12 @@ class SongSelect{
 			this.touchFullBtn.style.display = "block"
 			pageEvents.add(this.touchFullBtn, "touchend", toggleFullscreen)
 		}
-		
+
 		pageEvents.add(this.canvas, "wheel", this.mouseWheel.bind(this))
 
 		this.selectable = document.getElementById("song-sel-selectable")
 		this.selectableText = ""
-		
+
 		this.redrawRunning = true
 		this.redrawBind = this.redraw.bind(this)
 		this.redraw()
@@ -411,7 +411,7 @@ class SongSelect{
 			pageEvents.send("song-select-difficulty", this.songs[this.selectedSong])
 		}
 	}
-	
+
 	setAltText(element, text){
 		element.innerText = text
 		element.setAttribute("alt", text)
@@ -466,7 +466,7 @@ class SongSelect{
 					this.searchSetActive(this.search.active-1)
 				}else{
 					this.searchSetActive(this.search.results.length-1)
-				}	
+				}
 			}else if(name === "confirm"){
 				if(Number.isInteger(this.search.active)){
 					this.searchProceed(parseInt(this.search.results[this.search.active].dataset.songId))
@@ -551,7 +551,7 @@ class SongSelect{
 			}
 		}
 	}
-	
+
 	mouseDown(event){
 		if(event.target === this.selectable || event.target.parentNode === this.selectable){
 			this.selectable.focus()
@@ -690,7 +690,7 @@ class SongSelect{
 			this.state.hasPointer = false
 		}
 	}
-	
+
 	songSelMouse(x, y){
 		if(this.state.locked === 0 && this.songAsset.marginTop <= y && y <= this.songAsset.marginTop + this.songAsset.height){
 			x -= 1280 / 2
@@ -723,7 +723,7 @@ class SongSelect{
 					&& moveBy === this.diffOptions.length + 3
 					|| currentSong.courses[
 						this.difficultyId[moveBy - this.diffOptions.length]
-					]
+						]
 				){
 					return moveBy
 				}
@@ -731,7 +731,7 @@ class SongSelect{
 		}
 		return null
 	}
-	
+
 	moveToSong(moveBy, fromP2){
 		var ctrl = false
 		if(moveBy == 7.1){
@@ -775,7 +775,7 @@ class SongSelect{
 			var scrollDelay = changeSpeed * this.songSelecting.scrollDelay
 			var resize2 = changeSpeed - resize
 			var scroll = resize2 - resize - scrollDelay * 2
-			
+
 			var soundsDelay = Math.abs((scroll + resize) / moveBy)
 			this.lastMoveBy = fromP2 ? fromP2.player : false
 			if(ctrl){
@@ -790,7 +790,7 @@ class SongSelect{
 			this.pointer(false)
 		}
 	}
-	
+
 	categoryJump(moveBy, fromP2){
 		if(p2.session && !fromP2){
 			var ms = this.getMS()
@@ -805,7 +805,7 @@ class SongSelect{
 			this.state.catJump = true
 			this.state.move = moveBy;
 			this.state.locked = 1
-			
+
 			this.endPreview()
 			this.playSound("se_jump", 0, fromP2 ? fromP2.player : false)
 		}
@@ -819,7 +819,7 @@ class SongSelect{
 			this.playSound("se_ka", 0, p2.session ? p2.player : false)
 		}
 	}
-	
+
 	toSelectDifficulty(fromP2){
 		var currentSong = this.songs[this.selectedSong]
 		if(p2.session && !fromP2 && currentSong.action !== "random"){
@@ -838,9 +838,9 @@ class SongSelect{
 				if(currentSong.unloaded){
 					return
 				}
-				
+
 				if(fromP2 && fromP2.player !== p2.player){
-					this.drawBackground(currentSong.originalCategory)	
+					this.drawBackground(currentSong.originalCategory)
 				}
 				var prevScreen = this.state.screen
 				this.state.screen = "difficulty"
@@ -851,7 +851,7 @@ class SongSelect{
 				if(this.selectedDiff === this.diffOptions.length + 4){
 					this.selectedDiff = this.diffOptions.length + 3
 				}
-				
+
 				this.playSound("se_don", 0, fromP2 ? fromP2.player : false)
 				assets.sounds["v_songsel"].stop()
 				if(!this.showWarning && prevScreen !== "difficulty"){
@@ -903,7 +903,7 @@ class SongSelect{
 			this.state.screenMS = this.getMS()
 			this.state.locked = true
 			this.state.moveHover = null
-			
+
 			assets.sounds["v_diffsel"].stop()
 			this.playSound("se_cancel", 0, fromP2 ? fromP2.player : false)
 		}
@@ -915,7 +915,7 @@ class SongSelect{
 		var selectedSong = this.songs[this.selectedSong]
 		assets.sounds["v_diffsel"].stop()
 		this.playSound("se_don", 0, p2.session ? p2.player : false)
-		
+
 		try{
 			if(assets.customSongs){
 				assets.customSelected = this.selectedSong
@@ -925,7 +925,7 @@ class SongSelect{
 			}
 			localStorage["selectedDiff"] = difficulty + this.diffOptions.length
 		}catch(e){}
-		
+
 		if(difficulty === 3 && this.state.ura){
 			difficulty = 4
 		}
@@ -950,27 +950,27 @@ class SongSelect{
 		}else if(p2.socket && p2.socket.readyState === 1 && !assets.customSongs){
 			multiplayer = ctrl
 		}
-		
+
 		if (this.state.options > 2 && this.state.options < 6) {
 			mods.speed = this.state.options - 1;
-		} else if (this.state.options === 7) { 
+		} else if (this.state.options === 7) {
 			mods.shuffle = 1;
-		} else if (this.state.options === 8) { 
+		} else if (this.state.options === 8) {
 			mods.shuffle = 0.25;
-		} else if (this.state.options === 9) { 
+		} else if (this.state.options === 9) {
 			mods.shuffle = 0.5;
-		} else if (this.state.options === 6) { 
+		} else if (this.state.options === 6) {
 			mods.doron = true;
-		} else if (this.state.options === 10) { 
+		} else if (this.state.options === 10) {
 			mods.hardcore = true;
-		} else if (this.state.options === 11) { 
+		} else if (this.state.options === 11) {
 			mods.allDon = true;
-		} else if (this.state.options === 12) { 
+		} else if (this.state.options === 12) {
 			mods.allKat = true;
 		}
-		
+
 		var diff = this.difficultyId[difficulty]
-		
+
 		new LoadSong({
 			"title": selectedSong.title,
 			"originalTitle": selectedSong.originalTitle,
@@ -988,18 +988,18 @@ class SongSelect{
 		}, autoplay, multiplayer, touch)
 	}
 	toOptions(moveBy){
-			this.playSound("se_ka", 0, p2.session ? p2.player : false)
-			this.selectedDiff = 1
-			do{
-				this.state.options = this.mod(this.optionsList.length, this.state.options + moveBy)
-			}while((p2.socket.readyState !== 1 || assets.customSongs) && this.state.options === 2)
+		this.playSound("se_ka", 0, p2.session ? p2.player : false)
+		this.selectedDiff = 1
+		do{
+			this.state.options = this.mod(this.optionsList.length, this.state.options + moveBy)
+		}while((p2.socket.readyState !== 1 || assets.customSongs) && this.state.options === 2)
 	}
 	toSound(moveBy){
-			this.playSound("se_ka", 0, p2.session ? p2.player : false)
-			this.selectedDiff = 2
-			do{
-				this.state.sound = this.mod(this.soundList.length, this.state.sound + moveBy)
-			}while((!p2.socket || p2.socket.readyState !== 1 || assets.customSongs) && this.state.options === 2)
+		this.playSound("se_ka", 0, p2.session ? p2.player : false)
+		this.selectedDiff = 2
+		do{
+			this.state.sound = this.mod(this.soundList.length, this.state.sound + moveBy)
+		}while((!p2.socket || p2.socket.readyState !== 1 || assets.customSongs) && this.state.options === 2)
 	}
 	toTitleScreen(){
 		if(!p2.session){
@@ -1048,7 +1048,7 @@ class SongSelect{
 			this.state.moveHover = null
 		}else{
 			localStorage["selectedSong"] = this.selectedSong
-			
+
 			this.playSound("se_don")
 			this.clean()
 			setTimeout(() => {
@@ -1071,7 +1071,7 @@ class SongSelect{
 			pageEvents.send("import-songs-default")
 		}else{
 			localStorage["selectedSong"] = this.selectedSong
-			
+
 			this.playSound("se_don")
 			this.clean()
 			setTimeout(() => {
@@ -1086,14 +1086,14 @@ class SongSelect{
 			new SettingsView(this.touchEnabled, false, undefined, undefined, plugins.getSettings())
 		}, 500)
 	}
-	
+
 	redraw(){
 		if(!this.redrawRunning){
 			return
 		}
 		requestAnimationFrame(this.redrawBind)
 		var ms = this.getMS()
-		
+
 		for(var key in this.pressedKeys){
 			if(this.pressedKeys[key]){
 				if(ms >= this.pressedKeys[key] + (this.state.screen === "song" && (key === "right" || key === "left") ? 20 : 50)){
@@ -1102,11 +1102,11 @@ class SongSelect{
 				}
 			}
 		}
-		
+
 		if(!this.redrawRunning){
 			return
 		}
-		
+
 		var ctx = this.ctx
 		var winW = innerWidth
 		var winH = lastHeight
@@ -1133,27 +1133,27 @@ class SongSelect{
 			ctx.scale(ratio, ratio)
 			this.canvas.style.width = (winW / this.pixelRatio) + "px"
 			this.canvas.style.height = (winH / this.pixelRatio) + "px"
-			
+
 			var borders = (this.songAsset.border + this.songAsset.innerBorder) * 2
 			var songsLength = Math.ceil(winW / ratio / (this.songAsset.width + this.songAsset.marginLeft)) + 1
-			
+
 			this.songTitleCache.resize(
 				(this.songAsset.width - borders + 1) * songsLength,
 				this.songAsset.height - borders + 1,
 				ratio + 0.2
 			)
-			
+
 			this.currentSongCache.resize(
 				(this.songAsset.width - borders + 1) * 2,
 				this.songAsset.height - borders + 1,
 				ratio + 0.2
 			)
-			
+
 			var textW = strings.id === "en" ? 350 : 280
 			this.selectTextCache.resize((textW + 53 + 60 + 1) * 2, this.songAsset.marginTop + 15, ratio + 0.5)
-			
+
 			this.nameplateCache.resize(274, 134, ratio + 0.2)
-			
+
 			var lastCategory
 			this.songs.forEach(song => {
 				var cat = (song.category || "") + song.skin.outline
@@ -1162,9 +1162,9 @@ class SongSelect{
 				}
 			})
 			this.categoryCache.resize(280, this.songAsset.marginTop + 1 , ratio + 0.5)
-			
+
 			this.difficultyCache.resize((44 + 56 + 2) * 5, 135 + 10, ratio + 0.5)
-			
+
 			var w = winW / ratio / 2
 			this.sessionCache.resize(w, 39 * 2, ratio + 0.5)
 			for(var id in this.sessionText){
@@ -1189,9 +1189,9 @@ class SongSelect{
 					])
 				})
 			}
-			
+
 			this.selectableText = ""
-			
+
 			if(this.search && this.searchContainer){
 				this.searchInput()
 			}
@@ -1213,7 +1213,7 @@ class SongSelect{
 		this.ratio = ratio
 		winW /= ratio
 		winH /= ratio
-		
+
 		var frameTop = winH / 2 - 720 / 2
 		var frameLeft = winW / 2 - 1280 / 2
 		var songTop = frameTop + this.songAsset.marginTop
@@ -1221,7 +1221,7 @@ class SongSelect{
 		var songSelMoving = false
 		var screen = this.state.screen
 		var selectedWidth = this.songAsset.width
-		
+
 		if(this.search && this.searchContainer){
 			var vmin = Math.min(innerWidth, lastHeight) / 100
 			if(this.vmin !== vmin){
@@ -1258,7 +1258,7 @@ class SongSelect{
 				screen = "title"
 			}
 		}
-		
+
 		if((screen === "song" || screen === "difficulty") && (this.showWarning && !this.showWarning.shown || scoreStorage.scoreSaveFailed)){
 			if(!this.showWarning){
 				this.showWarning = {name: "scoreSaveFailed"}
@@ -1274,7 +1274,7 @@ class SongSelect{
 			this.state.locked = true
 			this.playSound("se_pause")
 		}
-		
+
 		if(screen === "title" || screen === "titleFadeIn" || screen === "song"){
 			var textW = strings.id === "en" ? 350 : 280
 			this.selectTextCache.get({
@@ -1305,7 +1305,7 @@ class SongSelect{
 					{fill: "#fff", shadow: [-1, 1, 3, 1.5]}
 				])
 			})
-			
+
 			var selectedSong = this.songs[this.selectedSong]
 			var category = selectedSong.category
 			this.draw.category({
@@ -1355,12 +1355,12 @@ class SongSelect{
 				}
 			})
 		}
-		
+
 		if(screen === "song"){
 			if(this.songs[this.selectedSong].courses && !this.songs[this.selectedSong].unloaded){
 				selectedWidth = this.songAsset.selectedWidth
 			}
-			
+
 			var lastMoveMul = Math.pow(Math.abs(this.state.lastMove || 0), 1 / 4)
 			var changeSpeed = this.songSelecting.speed * lastMoveMul
 			var resize = changeSpeed * (lastMoveMul === 0 ? 0 : this.songSelecting.resize / lastMoveMul)
@@ -1368,12 +1368,12 @@ class SongSelect{
 			var resize2 = changeSpeed - resize
 			var scroll = resize2 - resize - scrollDelay * 2
 			var elapsed = ms - this.state.moveMS
-			
+
 			if(this.state.catJump || (this.state.move && ms > this.state.moveMS + resize2 - scrollDelay)){
 				var isJump = this.state.catJump
 				var isSkip = this.state.skip
 				var previousSelectedSong = this.selectedSong
-				
+
 				if(!isJump){
 					if(!isSkip){
 						this.playSound("se_ka", 0, this.lastMoveBy)
@@ -1433,7 +1433,7 @@ class SongSelect{
 						localStorage["selectedSong"] = this.selectedSong
 					}catch(e){}
 				}
-				
+
 				if(this.songs[this.selectedSong].action !== "back"){
 					var cat = this.songs[this.selectedSong].originalCategory
 					this.drawBackground(cat)
@@ -1485,13 +1485,13 @@ class SongSelect{
 					this.selectedDiff >= this.diffOptions.length && !currentSong.courses[this.difficultyId[this.selectedDiff - this.diffOptions.length]]
 					|| this.selectedDiff === this.diffOptions.length + 3 && this.state.ura
 					|| this.selectedDiff === this.diffOptions.length + 4 && !this.state.ura
-				)
+					)
 				this.state.move = 0
 			}else if(this.selectedDiff < 0 || this.selectedDiff >= this.diffOptions.length && !currentSong.courses[this.difficultyId[this.selectedDiff - this.diffOptions.length]]){
 				this.selectedDiff = 0
 			}
 		}
-		
+
 		if(songSelMoving){
 			if(this.previewing !== null){
 				this.endPreview()
@@ -1501,13 +1501,13 @@ class SongSelect{
 				this.startPreview()
 			}
 		}
-		
+
 		this.songFrameCache = {
 			w: this.songAsset.width + this.songAsset.selectedWidth + this.songAsset.fullWidth + (15 + 1) * 3,
 			h: this.songAsset.fullHeight + 16,
 			ratio: ratio
 		}
-		
+
 		if(screen === "title" || screen === "titleFadeIn" || screen === "song"){
 			for(var i = this.selectedSong - 1; ; i--){
 				var highlight = 0
@@ -1554,7 +1554,7 @@ class SongSelect{
 				})
 			}
 		}
-		
+
 		var currentSong = this.songs[this.selectedSong]
 		var highlight = 0
 		if(!currentSong.courses){
@@ -1577,13 +1577,13 @@ class SongSelect{
 			selectedHeight = this.songAsset.fullHeight
 			highlight = 0
 		}
-		
+
 		if(this.lastCurrentSong.title !== currentSong.title || this.lastCurrentSong.subtitle !== currentSong.subtitle){
 			this.lastCurrentSong.title = currentSong.title
 			this.lastCurrentSong.subtitle = currentSong.subtitle
 			this.currentSongCache.clear()
 		}
-		
+
 		if(selectedWidth === this.songAsset.width){
 			this.drawSongCrown({
 				ctx: ctx,
@@ -1592,7 +1592,7 @@ class SongSelect{
 				y: songTop + this.songAsset.height - selectedHeight
 			})
 		}
-		
+
 		this.draw.songFrame({
 			ctx: ctx,
 			x: winW / 2 - selectedWidth / 2 + xOffset,
@@ -1645,7 +1645,7 @@ class SongSelect{
 					})
 					var opened = 1
 					var songSel = false
-					
+
 					for(var i = 0; i < this.diffOptions.length; i++){
 						var _x = x + 62 + i * 72
 						var _y = y + 67
@@ -1671,16 +1671,16 @@ class SongSelect{
 							y: _y + 28,
 							iconName: this.diffOptions[i].iconName
 						})
-						
+
 						var text = this.diffOptions[i].text
 						if(this.diffOptions[i].iconName === "options" && (this.selectedDiff === i || this.state.options !== 0)){
 							text = this.optionsList[this.state.options]
 						}
-						
+
 						if(this.diffOptions[i].iconName === "sounds" && (this.selectedDiff === i || this.state.sound !== 0)){
 							text = this.soundList[this.state.sound]
 						}
-						
+
 						this.draw.verticalText({
 							ctx: ctx,
 							text: text,
@@ -1696,7 +1696,7 @@ class SongSelect{
 							fontFamily: this.font,
 							letterSpacing: this.diffOptions[i].letterSpacing
 						})
-						
+
 						var highlight = 0
 						if(this.state.moveHover === i){
 							highlight = 2
@@ -1947,13 +1947,13 @@ class SongSelect{
 						})
 					}
 				}
-				
+
 				var borders = (this.songAsset.border + this.songAsset.innerBorder) * 2
 				var textW = this.songAsset.width - borders
 				var textH = this.songAsset.height - borders
 				var textX = Math.max(w - 37 - textW / 2, w / 2 - textW / 2)
 				var textY = opened * 12 + (1 - opened) * 7
-				
+
 				if(currentSong.subtitle){
 					this.currentSongCache.get({
 						ctx: ctx,
@@ -1979,7 +1979,7 @@ class SongSelect{
 						})
 					})
 				}
-				
+
 				var hasMaker = currentSong.maker || currentSong.maker === 0
 				if(hasMaker || currentSong.lyrics){
 					if (songSel) {
@@ -1987,7 +1987,7 @@ class SongSelect{
 						var _y = y + 10
 						ctx.strokeStyle = "#000"
 						ctx.lineWidth = 5
-						
+
 						if(hasMaker){
 							var grd = ctx.createLinearGradient(_x, _y, _x, _y + 50)
 							grd.addColorStop(0, "#fa251a")
@@ -2006,7 +2006,7 @@ class SongSelect{
 						})
 						ctx.fill()
 						ctx.stroke()
-						
+
 						if(hasMaker){
 							this.draw.layeredText({
 								ctx: ctx,
@@ -2103,7 +2103,7 @@ class SongSelect{
 						}
 					}
 				}
-				
+
 				for(var i = 0; currentSong.courses && i < 4; i++){
 					if(currentSong.courses[this.difficultyId[i]] || currentUra){
 						if(songSel && i === currentSong.p2Cursor && p2.socket.readyState === 1){
@@ -2121,7 +2121,7 @@ class SongSelect{
 						}
 					}
 				}
-				
+
 				if(!songSel && currentSong.courses.ura){
 					var fade = ((ms - this.state.screenMS) % 1200) / 1200
 					var _x = x + 402 + 4 * 100 + fade * 25
@@ -2133,7 +2133,7 @@ class SongSelect{
 					ctx.lineTo(_x - 35, _y + 25)
 					ctx.fill()
 				}
-				
+
 				ctx.globalAlpha = 1 - Math.max(0, opened - 0.5) * 2
 				ctx.fillStyle = selectedSkin.background
 				ctx.fillRect(x, y, w, h)
@@ -2190,12 +2190,12 @@ class SongSelect{
 				}
 			}
 		})
-		
+
 		if(screen !== "difficulty" && this.selectableText){
 			this.selectableText = ""
 			this.selectable.style.display = "none"
 		}
-		
+
 		if(songSelMoving){
 			this.draw.highlight({
 				ctx: ctx,
@@ -2206,7 +2206,7 @@ class SongSelect{
 				opacity: 0.8
 			})
 		}
-		
+
 		ctx.fillStyle = "#000"
 		ctx.fillRect(0, frameTop + 595, 1280 + frameLeft * 2, 125 + frameTop)
 		var x = 0
@@ -2238,7 +2238,7 @@ class SongSelect{
 		ctx.lineTo(x + w - 4, y + h)
 		ctx.lineTo(x + w - 4, y + 4)
 		ctx.fill()
-		
+
 		if(!p2.session || p2.player === 1){
 			var name = account.loggedIn ? account.displayName : strings.defaultName
 			var rank = account.loggedIn || !gameConfig.accounts || p2.session ? false : strings.notLoggedIn
@@ -2275,7 +2275,7 @@ class SongSelect{
 				size: 10
 			})
 		}
-		
+
 		if(p2.session){
 			x = x + w + 4
 			w = 396
@@ -2317,7 +2317,7 @@ class SongSelect{
 				})
 			}
 		}
-		
+
 		x = p2.session ? frameLeft + 642 + 200 : frameLeft + 642
 		w = p2.session ? frameLeft + 638 - 200 : frameLeft + 638
 		if(p2.session){
@@ -2418,17 +2418,17 @@ class SongSelect{
 				})
 			})
 		}
-		
+
 		if(this.state.showWarning){
 			if(this.preview){
 				this.endPreview()
 			}
 			ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
 			ctx.fillRect(0, 0, winW, winH)
-			
+
 			ctx.save()
 			ctx.translate(frameLeft, frameTop)
-			
+
 			var pauseRect = (ctx, mul) => {
 				this.draw.roundedRect({
 					ctx: ctx,
@@ -2482,7 +2482,7 @@ class SongSelect{
 				verticalAlign: "middle",
 				textAlign: "center"
 			})
-			
+
 			var _x = 640
 			var _y = 470
 			var _w = 464
@@ -2513,7 +2513,7 @@ class SongSelect{
 				letterSpacing: -1,
 				align: "center"
 			}, layers)
-			
+
 			var highlight = 1
 			if(this.state.moveHover === "showWarning"){
 				highlight = 2
@@ -2531,21 +2531,21 @@ class SongSelect{
 					radius: 30
 				})
 			}
-			
+
 			ctx.restore()
 		}
-		
+
 		if(screen === "titleFadeIn"){
 			ctx.save()
-			
+
 			var elapsed = ms - this.state.screenMS
 			ctx.globalAlpha = Math.max(0, 1 - elapsed / 500)
 			ctx.fillStyle = "#000"
 			ctx.fillRect(0, 0, winW, winH)
-			
+
 			ctx.restore()
 		}
-		
+
 		if(p2.session && (!this.lastScoreMS || ms > this.lastScoreMS + 1000)){
 			this.lastScoreMS = ms
 			scoreStorage.eventLoop()
@@ -2560,10 +2560,10 @@ class SongSelect{
 			this.songSelect.style.backgroundImage = "url('" + assets.image["bg_genre_def"].src + "')"
 		}
 	}
-	
+
 	drawClosedSong(config){
 		var ctx = config.ctx
-		
+
 		this.drawSongCrown(config)
 		config.width = this.songAsset.width
 		config.height = this.songAsset.height
@@ -2613,7 +2613,7 @@ class SongSelect{
 			})
 		}
 	}
-	
+
 	drawSongCrown(config){
 		if(!config.song.action && config.song.hash){
 			var ctx = config.ctx
@@ -2653,7 +2653,7 @@ class SongSelect{
 			}
 		}
 	}
-	
+
 	startPreview(loadOnly){
 		if(!loadOnly && this.state && this.state.showWarning || this.state.waitPreview > this.getMS()){
 			return
@@ -2662,7 +2662,7 @@ class SongSelect{
 		var id = currentSong.id
 		var prvTime = currentSong.preview
 		this.endPreview()
-		
+
 		if("id" in currentSong){
 			var startLoad = this.getMS()
 			if(loadOnly){
@@ -2672,7 +2672,7 @@ class SongSelect{
 				this.previewing = this.selectedSong
 			}
 			var songObj = this.previewList.find(song => song && song.id === id)
-			
+
 			if(songObj){
 				if(!loadOnly){
 					this.preview = songObj.preview_sound
@@ -2814,8 +2814,8 @@ class SongSelect{
 		}
 		return addedSong
 	}
-	
-	
+
+
 	createSearchResult(result, resultWidth, fontSize){
 		var song = result.obj
 		var title = this.getLocalTitle(song.title, song.title_lang)
@@ -2929,7 +2929,7 @@ class SongSelect{
 
 		if(idx === null){
 			this.search.active = null
-			return			
+			return
 		}
 
 		var el = this.search.results[idx]
@@ -3005,7 +3005,7 @@ class SongSelect{
 			}
 
 			pageEvents.remove(this.search.div.querySelector(":scope #song-search-container"),
-			["mousedown", "touchstart"])
+				["mousedown", "touchstart"])
 			pageEvents.remove(this.search.input, ["input"])
 
 			this.search.div.remove()
@@ -3162,11 +3162,11 @@ class SongSelect{
 							passedFilters++
 						}
 						break
-						case "diverge":
-							var branch = Object.values(song.courses).find(course => course && course.branch)
-							if((value === "yes" && branch) || (value === "no" && !branch)){
-								passedFilters++
-							}
+					case "diverge":
+						var branch = Object.values(song.courses).find(course => course && course.branch)
+						if((value === "yes" && branch) || (value === "no" && !branch)){
+							passedFilters++
+						}
 						break
 				}
 			})
@@ -3431,11 +3431,11 @@ class SongSelect{
 			p2.open()
 		}
 	}
-	
+
 	mod(length, index){
 		return ((index % length) + length) % length
 	}
-	
+
 	getLocalTitle(title, titleLang){
 		if(titleLang){
 			for(var id in titleLang){
@@ -3446,13 +3446,13 @@ class SongSelect{
 		}
 		return title
 	}
-	
+
 	clearHash(){
 		if(location.hash.toLowerCase().startsWith("#song=")){
 			p2.hash("")
 		}
 	}
-	
+
 	playSound(id, time, snd){
 		if(!this.drumSounds && (id === "se_don" || id === "se_ka" || id === "se_cancel")){
 			return
@@ -3463,11 +3463,11 @@ class SongSelect{
 			this.playedSounds[id] = ms
 		}
 	}
-	
+
 	getMS(){
 		return Date.now()
 	}
-	
+
 	clean(){
 		this.keyboard.clean()
 		this.gamepad.clean()
